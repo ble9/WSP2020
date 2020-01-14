@@ -4,15 +4,28 @@ const app = express()
 
 exports.httpReq = functions.https.onRequest(app)
 
-app.get('/', requestHandler);
+app.get('/', frontendHandler);
 
-app.get('/home', requestHandler);
+app.get('/b', backendHandler);
 
-app.get('/login', requestHandler);
 
-function requestHandler(request, response) {
-    response.sendFile( __dirname + 'functions\Lol\index.html')
+app.get('/home', frontendHandler);
+
+app.get('/login', frontendHandler);
+
+function frontendHandler(request, response) {
+    response.sendFile(__dirname + 'functions\Lol\index.html')
 }
+
+function backendHandler(req, res) {
+    const n = Math.random() // 0`1 not including one
+    const num = Math.floor(n * 10)
+    let s = 0;
+    s = 50 + 12;
+    let page = ``;
+    res.send(page)
+}
+
 
 
 
