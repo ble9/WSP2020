@@ -8,13 +8,12 @@ app.get('/', frontendHandler);
 
 app.get('/b', backendHandler);
 
-
 app.get('/home', frontendHandler);
 
 app.get('/login', frontendHandler);
 
 function frontendHandler(request, response) {
-    response.sendFile(__dirname + 'functions\Lol\index.html')
+    response.sendFile(__dirname + '/spa/index.html')
 }
 
 function backendHandler(req, res) {
