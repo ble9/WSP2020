@@ -21,11 +21,7 @@ function backendHandler(req, res) {
     const num = Math.floor(n * 10)
     let s = 0;
     s = 50 + 12;
-    let page = ``;
+    let page = `<h1> your luckly number is ${num}</h1>
+    Sum is ${s}`;
     res.send(page)
 }
-
-
-
-
-
