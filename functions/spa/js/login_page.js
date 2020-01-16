@@ -1,5 +1,7 @@
 function login_page() {
     pageContent.innerHTML = `
+    <h1>GIVE ME YOUR EMAIL NOW </h1>
+
     <form>
   <div class="form-group">
     <label for="exampleInputEmail1">Email address</label>

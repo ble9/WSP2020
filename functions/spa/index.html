@@ -10,13 +10,17 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
     integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
+    <div class="jumbotron">
+      <h1 class="display-4">My enterprise!</h1>
+      <p class="lead">welcome to this plain old boring site </p>
+    </div>
   <title>My Company</title>
 </head>
 <body>
-  <h1>This is my company heading</h1>
   <div id="content"></div>
 
   <script src="js/login_page.js"></script>
+  <script src="js/home_page.js"></script>
   
   <script>
     const pageContent = document.getElementById("content")
@@ -27,7 +31,7 @@
       if (currentPath === '/') {
         pageContent.innerHTML = "<h1>Root Page </h1>"
       } else if (currentPath === '/home') {
-        pageContent.innerHTML = "<h1>Home Page </h1>"
+        home_page()
       } else if (currentPath === '/login') {
         login_page()
       }
