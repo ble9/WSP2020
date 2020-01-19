@@ -25,22 +25,15 @@ function home_page() {
                   <span class="input-group-text">.00</span>
                 </div>
                     </div>
-              <div class="input-group">
+              <div class="input-group front ">
                 <div class="input-group-prepend">
                   <span class="input-group-text">Reason For sending</span>
                 </div>
                 <textarea class="form-control" placholder=" comments" aria-label="comments"></textarea>
-              </div>
-              <button onclick="myFunction()">Submit</button>
+                <button onclick="myFunction()">Submit</button>
                 </div>
+                </div>
+
 </form>`
               }
-              function myFunction() {
-                var txt;
-                if (confirm("Are you Sure!")) {
-                  txt = "You've Sent me MOOOOOOOOOOOOOOLA!";
-                } else {
-                  txt = "You've deny me? You Shall Pay";
-                }
-                document.getElementById("content").innerHTML = txt;
-              }
+             

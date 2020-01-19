@@ -24,7 +24,7 @@
       </div>
     </div>
   
-    <div class = "container front " >
+    <div class = "container front " style = color:blanchedalmond >
     <h1 class="display-4 front">My enterprise!</h1>
     <p class="lead front">welcome to this plain old boring site </p>
   </div>
@@ -34,7 +34,17 @@
 
 <body>
   <div id="content"></div>
+  
   <script>
+     function myFunction() {
+                var txt;
+                if (confirm("Are you Sure!")) {
+                  txt = "You've Sent me MOOOOOOOOOOOOOOLA!";
+                } else {
+                  txt = "You've deny me? You Shall Pay";
+                }
+                document.getElementById("content").innerHTML = txt;
+              }
     const pageContent = document.getElementById("content")
 
     window.onload = function () {
