@@ -4,24 +4,16 @@ const app = express()
 
 exports.httpReq = functions.https.onRequest(app)
 
-app.get('/', frontendHandler);
+app.get('/', (req,res) => {
+    res.send('<h1> My Store (from backend)<h1/>')
+})
 
-app.get('/b', backendHandler);
-
-app.get('/home', frontendHandler);
-
-app.get('/login', frontendHandler);
 
 function frontendHandler(request, response) {
-    response.sendFile(__dirname + '/spa/index.html')
+    response.sendFile(__dirname + '/prodadmin/prodadmin.html')
 }
 
-function backendHandler(req, res) {
-    const n = Math.random() // 0`1 not including one
-    const num = Math.floor(n * 10)
-    let s = 0;
-    s = 50 + 12;
-    let page = `<h1> your luckly number is ${num}</h1>
-    Sum is ${s}`;
-    res.send(page)
-}
+app.get('/show', frontendHandler);
+app.get('/add', frontendHandler);
+app.get('/home', frontendHandler);
+app.get('/login', frontendHandler);
