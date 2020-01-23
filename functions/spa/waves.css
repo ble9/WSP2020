@@ -11,15 +11,16 @@
 }
 .jumbotron{
     background-image: linear-gradient(to top, #86377b 20%, #27273c 80%);
+    max-height: 500px;
 }
 .container {
-    z-index: 20;
+    z-index: 10;
 }
 .front {
     z-index: 300;
 }
 .waveWrapper {
-    z-index: 0;
+    z-index: -1;
     overflow: hidden;
     position: absolute;
     left: 0;
@@ -31,9 +32,9 @@
 .waveWrapperInner {
     z-index: 0;
     position: absolute;
-    width: 100%;
+    width: 150vw;
     overflow: hidden;
-    height: 40%;
+    height: 50vh;
     
 }
 .bgTop {
@@ -51,7 +52,7 @@
     z-index: 0;
     position: absolute;
     left: 0;
-    width: 200%;
+    width: 200vw;
     height: 84%;
     background-repeat: repeat no-repeat;
     background-position: 0 bottom;
@@ -59,7 +60,7 @@
 }
 .waveTop {
     z-index: 0;
-    background-size: 50% 100px;
+    background-size: 100%;
 }
 .waveAnimation .waveTop {
     z-index: 0;
@@ -70,7 +71,7 @@
 }
 .waveMiddle {
     z-index: 0;
-    background-size: 50% 120px;
+    background-size: 50%;
 }
 .waveAnimation .waveMiddle {
     z-index: 0;
@@ -78,7 +79,7 @@
 }
 .waveBottom {
     z-index: 0;
-    background-size: 50% 100px;
+    background-size: 50%;
 }
 .waveAnimation .waveBottom {
     z-index: 0;
