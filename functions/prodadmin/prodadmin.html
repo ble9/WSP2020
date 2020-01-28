@@ -41,7 +41,7 @@
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
     </script>
-
+    <script src="js/product_validate.js"></script>
     <script src="js/login_page.js"></script>
     <script src="js/show_page.js"></script>
     <script src="js/add_page.js"></script>
@@ -49,7 +49,7 @@
 
     <script>
         const glPageContent = document.getElementById("page_content")
-
+        const IMAGE_folder = 'products/'
         window.onload = function () {
             const currentPath = window.location.pathname
             if (currentPath === '/login') {
