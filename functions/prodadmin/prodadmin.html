@@ -23,9 +23,9 @@
     <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-app.js"></script>
     <script defer src="/__/firebase/7.7.0/firebase-auth.js"></script>
     <script defer src="/__/firebase/7.7.0/firebase-database.js"></script>
+    <script defer src="/__/firebase/7.7.0/firebase-firestore.js"></script>
     <script defer src="/__/firebase/7.7.0/firebase-storage.js"></script>
-     <!-- initialize the SDK after all desired features are loaded -->
-     <script defer src="/__/firebase/init.js"></script>
+  
     <script>
 
         // Your web app's Firebase configuration
@@ -38,18 +38,21 @@
             messagingSenderId: "926690846030",
             appId: "1:926690846030:web:28064a81febe7141212a1f"
         };
+
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
     </script>
-    <script src="js/product_validate.js"></script>
+    
     <script src="js/login_page.js"></script>
+    <script src="js/product_validate.js"></script>
     <script src="js/show_page.js"></script>
     <script src="js/add_page.js"></script>
     <script src="js/home_page.js"></script>
 
     <script>
         const glPageContent = document.getElementById("page_content")
-        const IMAGE_folder = 'products/'
+        const IMAGE_FOLDER = 'products/'
+        const COLLECTION = 'products';
         window.onload = function () {
             const currentPath = window.location.pathname
             if (currentPath === '/login') {

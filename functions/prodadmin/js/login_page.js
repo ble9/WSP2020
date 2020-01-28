@@ -32,6 +32,7 @@ async function signIn() {
      <br>
     < a href = "/login" class =  btn btn-outline-primary"> Go To Login </a>
 
-  `}
+  `;
+}
 
 }

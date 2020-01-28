@@ -10,7 +10,6 @@ function add_page_secured() {
     glPageContent.innerHTML = `
         <a href='/home' class="btn btn-outline-primary">Home</a>
         <a href='/show' class="btn btn-outline-primary">Show Products</a>
-        <button class="btn btn-outline-danger type="button" onclick="logOut()">Log Out</button>
         <div class="form-group">
             Name: <input class="form-control" type="text" id="name"/>
             <p id="name_error" style="color:red;"/>
@@ -25,45 +24,44 @@ function add_page_secured() {
             <p id="price_error" style="color:red;"/>
         </div>
         <div class="form-group">
-            Name: <input type="file" value="upload" id="imageButton"/>
+            Image : <input type="file" id="imageButton" value="upload"/>
             <p id="image_error" style="color:red;"/>
         </div>
+        <button class="btn btn-primary" type="button" onclick="addProduct()"> Add</button>
     `;
 
     const imageButton = document.getElementById('imageButton');
     imageButton.addEventListener('change', e => {
-        glImageFile2Add = e.target.files[0];
+        glImageFile2Add=e.target.files[0] 
     });
 }
-
-async function addProduct() {
-    const modal = document.getElementById('confirmModal');
-    modal.classList.add('hide-class');
+ async function addProduct() {
+    
 
     const name = document.getElementById('name').value;
     const summary = document.getElementById('summary').value;
-    const price = document.getElementById('price').value; //was const
+    let price = document.getElementById('price').value; 
 
+
+    //validation 
     const nameErrorTag = document.getElementById('name_error');
     const summaryErrorTag = document.getElementById('summary_error');
     const priceErrorTag = document.getElementById('price_error');
     const imageErrorTag = document.getElementById('image_error');
 
-    //validation 
+   
     nameErrorTag.innerHTML = validate_name(name);
     summaryErrorTag.innerHTML = validate_summary(summary);
     priceErrorTag.innerHTML = validate_price(price);
     imageErrorTag.innerHTML = !glImageFile2Add ? 'Error: Image file not selected' : null;
 
-    if (nameErrorTag.innerHTML || summaryErrorTag.innerHTML ||
-        priceErrorTag.innerHTML || imageErrorTag.innerHTML
-    ) {
+    if (nameErrorTag.innerHTML || summaryErrorTag.innerHTML || priceErrorTag.innerHTML || imageErrorTag.innerHTML)
+         {
         return;
     }
-
-    // add the product, all is validated!
+    //now ready to add the product to firebase
     try {
-        const imageName = Date.now() + glImageFile2Add.name; // unique name generator
+        const image = Date.now() + glImageFile2Add.name; // unique name generator
         const ref = firebase.storage().ref(IMAGE_FOLDER + image);
         const taskSnapshot = await ref.put(glImageFile2Add);
         const image_url = await taskSnapshot.ref.getDownloadURL();
@@ -71,16 +69,16 @@ async function addProduct() {
         // product: name, summary, price in firestore database. image already stored
         price = Number(price);
         await firebase.firestore().collection(COLLECTION).doc()
-            .set({ name, summary, price, imageName, image_url, });
+            .set({ name, summary, price, image, image_url, });
 
         glPageContent.innerHTML = `
             <h1>${name} is added.</h1>
             <a href="/show" class="btn btn-outline-primary">Show All</a>
-        `;
-    
+            `;
+                
     }catch (e) {
         glPageContent.innerHTML = `
         <h1>Cannot add a product!</h1> 
-         ${JSON.stringify(e)} `
+         ${JSON.stringify(e)} `;
     }
 }

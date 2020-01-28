@@ -6,7 +6,7 @@ function validate_name(name) {
 }
 
 function validate_summary(summary) {
-    if (!summary || summary.length < 2)
+    if (!summary || summary.length > 2)
         return 'Error: min 2 chars'
     else
         return null

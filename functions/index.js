@@ -13,7 +13,7 @@ function frontendHandler(request, response) {
     response.sendFile(__dirname + '/prodadmin/prodadmin.html')
 }
 
-app.get('/show', frontendHandler);
+app.get('/login', frontendHandler);
 app.get('/add', frontendHandler);
 app.get('/home', frontendHandler);
-app.get('/login', frontendHandler);
+app.get('/show', frontendHandler);
