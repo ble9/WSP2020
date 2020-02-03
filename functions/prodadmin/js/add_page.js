@@ -33,34 +33,36 @@ function add_page_secured() {
 
     const imageButton = document.getElementById('imageButton');
     imageButton.addEventListener('change', e => {
-        glImageFile2Add=e.target.files[0] 
+        glImageFile2Add = e.target.files[0]
     });
 }
+
+//display preview 
 function showMyImage(fileInput) {
     var files = fileInput.files;
-    for (var i = 0; i < files.length; i++) {           
+    for (var i = 0; i < files.length; i++) {
         var file = files[i];
-        var imageType = /image.*/;     
+        var imageType = /image.*/;
         if (!file.type.match(imageType)) {
             continue;
-        }           
-        var img=document.getElementById("thumbnil");            
-        img.file = file;    
+        }
+        var img = document.getElementById("thumbnil");
+        img.file = file;
         var reader = new FileReader();
-        reader.onload = (function(aImg) { 
-            return function(e) { 
-                aImg.src = e.target.result; 
-            }; 
+        reader.onload = (function (aImg) {
+            return function (e) {
+                aImg.src = e.target.result;
+            };
         })(img);
         reader.readAsDataURL(file);
-    }    
+    }
 }
- async function addProduct() {
-    
+async function addProduct() {
+
 
     const name = document.getElementById('name').value;
     const summary = document.getElementById('summary').value;
-    let price = document.getElementById('price').value; 
+    let price = document.getElementById('price').value;
 
 
     //validation 
@@ -69,14 +71,13 @@ function showMyImage(fileInput) {
     const priceErrorTag = document.getElementById('price_error');
     const imageErrorTag = document.getElementById('image_error');
 
-   
+
     nameErrorTag.innerHTML = validate_name(name);
     summaryErrorTag.innerHTML = validate_summary(summary);
     priceErrorTag.innerHTML = validate_price(price);
     imageErrorTag.innerHTML = !glImageFile2Add ? 'Error: Image file not selected' : null;
 
-    if (nameErrorTag.innerHTML || summaryErrorTag.innerHTML || priceErrorTag.innerHTML || imageErrorTag.innerHTML)
-         {
+    if (nameErrorTag.innerHTML || summaryErrorTag.innerHTML || priceErrorTag.innerHTML || imageErrorTag.innerHTML) {
         return;
     }
     //now ready to add the product to firebase
@@ -95,8 +96,8 @@ function showMyImage(fileInput) {
             <h1>${name} is added.</h1>
             <a href="/show" class="btn btn-outline-primary">Show All</a>
             `;
-                
-    }catch (e) {
+
+    } catch (e) {
         glPageContent.innerHTML = `
         <h1>Cannot add a product!</h1> 
          ${JSON.stringify(e)} `;

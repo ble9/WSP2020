@@ -27,12 +27,12 @@ async function signIn() {
     window.location.href = '/home'
   } catch (e) {
     glPageContent.innerHTML =
-     `login Failed: <br>  
+      `login Failed: <br>  
      ${e} 
      <br>
     < a href = "/login" class =  btn btn-outline-primary"> Go To Login </a>
 
   `;
-}
+  }
 
 }
