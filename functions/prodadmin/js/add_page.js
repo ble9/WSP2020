@@ -24,7 +24,8 @@ function add_page_secured() {
             <p id="price_error" style="color:red;"/>
         </div>
         <div class="form-group">
-            Image : <input type="file" id="imageButton" value="upload"/>
+            Image : <input type="file" id="imageButton" value="upload" accept="image/*"  onchange="showMyImage(this)"/>
+            <img id="thumbnil" style="width:50%; margin-top:10px;"  src="" alt="image"/>
             <p id="image_error" style="color:red;"/>
         </div>
         <button class="btn btn-primary" type="button" onclick="addProduct()"> Add</button>
@@ -34,6 +35,25 @@ function add_page_secured() {
     imageButton.addEventListener('change', e => {
         glImageFile2Add=e.target.files[0] 
     });
+}
+function showMyImage(fileInput) {
+    var files = fileInput.files;
+    for (var i = 0; i < files.length; i++) {           
+        var file = files[i];
+        var imageType = /image.*/;     
+        if (!file.type.match(imageType)) {
+            continue;
+        }           
+        var img=document.getElementById("thumbnil");            
+        img.file = file;    
+        var reader = new FileReader();
+        reader.onload = (function(aImg) { 
+            return function(e) { 
+                aImg.src = e.target.result; 
+            }; 
+        })(img);
+        reader.readAsDataURL(file);
+    }    
 }
  async function addProduct() {
     
