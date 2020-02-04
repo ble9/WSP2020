@@ -1,6 +1,5 @@
 function home_page() {
-    glPageContent.innerHTML = `<h1>Home Page</h1>`
-    home_page_secured()
+    auth('prodadmin@test.com', home_page_secured, 'login');
 }
 
 function home_page_secured() {
