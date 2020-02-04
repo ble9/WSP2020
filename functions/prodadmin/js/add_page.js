@@ -24,8 +24,9 @@ function add_page_secured() {
             <p id="price_error" style="color:red;"/>
         </div>
         <div class="form-group">
-            Image : <input type="file" id="imageButton" value="upload" accept="image/*"  onchange="showMyImage(this)"/>
-            <img id="thumbnil" style="width:50%; margin-top:10px;"  src="" alt="image"/>
+            Image : <input type="file" id="imageButton" onchange="previewFile()">
+            <br>
+        <img src="" height="200" alt="Image preview...">
             <p id="image_error" style="color:red;"/>
         </div>
         <button class="btn btn-primary" type="button" onclick="addProduct()"> Add</button>
@@ -38,25 +39,22 @@ function add_page_secured() {
 }
 
 //display preview 
-function showMyImage(fileInput) {
-    var files = fileInput.files;
-    for (var i = 0; i < files.length; i++) {
-        var file = files[i];
-        var imageType = /image.*/;
-        if (!file.type.match(imageType)) {
-            continue;
-        }
-        var img = document.getElementById("thumbnil");
-        img.file = file;
-        var reader = new FileReader();
-        reader.onload = (function (aImg) {
-            return function (e) {
-                aImg.src = e.target.result;
-            };
-        })(img);
-        reader.readAsDataURL(file);
+function previewFile() {
+    const preview = document.querySelector('img');
+    const file = document.querySelector('input[type=file]').files[0];
+    const reader = new FileReader();
+  
+    reader.addEventListener("load", function () {
+      // convert image file to base64 string
+      preview.src = reader.result;
+    }, false);
+  
+    if (file) {
+      reader.readAsDataURL(file);
     }
-}
+
+  }
+
 async function addProduct() {
 
 
@@ -92,14 +90,20 @@ async function addProduct() {
         await firebase.firestore().collection(COLLECTION).doc()
             .set({ name, summary, price, image, image_url, });
 
+
+            var currimage= JSON.parse(sessionStorage.getItem('file'));
+
         glPageContent.innerHTML = `
             <h1>${name} is added.</h1>
+            <img src = ${image_url}>
             <a href="/show" class="btn btn-outline-primary">Show All</a>
             `;
+
 
     } catch (e) {
         glPageContent.innerHTML = `
         <h1>Cannot add a product!</h1> 
          ${JSON.stringify(e)} `;
     }
+    
 }
