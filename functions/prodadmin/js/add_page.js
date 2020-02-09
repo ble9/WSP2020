@@ -98,6 +98,7 @@ async function addProduct() {
             <img src = ${image_url}>
             <br>
             <a href="/show" class="btn btn-outline-primary">Show All</a>
+            <a href='/home' class="btn btn-outline-primary">Home</a>
             `;
 
 
