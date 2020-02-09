@@ -96,6 +96,7 @@ async function addProduct() {
         glPageContent.innerHTML = `
             <h1>${name} is added.</h1>
             <img src = ${image_url}>
+            <br>
             <a href="/show" class="btn btn-outline-primary">Show All</a>
             `;
 
