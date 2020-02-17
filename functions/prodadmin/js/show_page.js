@@ -15,8 +15,8 @@ async function show_page_secured() {
         products = [];
         const snapshot = await firebase.firestore().collection(COLLECTION).get();
         snapshot.forEach(doc => {
-            const {name, summary, price, imageName, image_url} = doc.data();
-            const p = {docId: doc.id, name, summary, price, imageName, image_url};
+            const {name, summary, price, image, image_url} = doc.data();
+            const p = {docId: doc.id, name, summary, price, image, image_url};
             products.push(p);
         });
     }
@@ -130,7 +130,7 @@ async function update(index) {
     //update database
     try {
         if(imageFile2Update) {
-            const imageRef2del = firebase.storage().ref().child(IMAGE_FOLDER + p.imageName);
+            const imageRef2del = firebase.storage().ref().child(IMAGE_FOLDER + p.image);
             await imageRef2del.delete();
             const image = Date.now() + imageFile2Update.name;
             const newImageRef = firebase.storage().ref(IMAGE_FOLDER + image);
@@ -160,9 +160,9 @@ async function deleteProduct(index) {
     try {
         const p = products[index];
         await firebase.firestore().collection(COLLECTION).doc(p.docId).delete();
-        const imageRef = firebase.storage().ref().child(IMAGE_FOLDER + p.imageName);
-        await imageRef.delete();
-
+        const imageRef = firebase.storage().ref().child(IMAGE_FOLDER + p.image);
+        await imageRef.delete()
+        
         const card = document.getElementById(p.docId);
         card.parentNode.removeChild(card);
 
