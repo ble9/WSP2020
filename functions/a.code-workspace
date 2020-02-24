@@ -1,0 +1,25 @@
+{
+	"folders": [
+		{
+			"name": "profile.d",
+			"path": "C:\\Program Files\\Git\\etc\\profile.d"
+		},
+		{
+			"name": "WSP2020",
+			"path": "C:\\WSP2020"
+		},
+		{
+			"name": "Python",
+			"path": "C:\\Users\\brian\\Documents\\Python"
+		},
+		{
+			"name": "static",
+			"path": "C:\\Users\\brian\\Desktop\\Assignment2-lesson4p1\\functions\\static"
+		},
+		{
+			"name": "wsp20-onlinestore",
+			"path": "C:\\wsp20-onlinestore"
+		}
+	],
+	"settings": {}
+}

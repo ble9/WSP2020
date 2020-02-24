@@ -1,6 +1,61 @@
-.form-signin{
-    width: 100%;
-    max-width: 400px;
-    padding:15px;
-    margin:auto;
+.form-signin {
+  width: 100%;
+  max-width: 400px;
+  padding: 15px;
+  margin: auto;
+}
+
+.btn {
+  flex: 1 1 auto;
+  margin: 10px;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: rgb(0, 0, 0);
+  border-radius: 10px;
+}
+
+.btn:hover {
+  background-position: right center;
+}
+
+.btn-primary {
+  background-image: linear-gradient(to right, #a1c4fd 0%, #c2e9fb 51%, #a1c4fd 100%);
+}
+
+span {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0%;
+  height: 10%;
+  width: 400%;
+  z-index: -1;
+  background: linear-gradient( 90deg, red 0%, green 12.5%, blue 25%, green 37.5%, red 50%, green 62.5%, blue 75%, green 87.5%, red 100%);
+  animation: GradientAnimation 5s linear infinite;
+}
+
+@keyframes GradientAnimation {
+  0% {
+    left: 0%
+  }
+  100% {
+    left: -200%
+  }
+}
+
+.card:hover .top {
+  -webkit-transform: rotateX(20deg);
+  transform: rotateX(20deg);
+  box-shadow: 0 50px 50px rgba(50, 50, 50, .2);
+  transform: rotateY(160deg);
+  -webkit-transform: rotateY(160deg);
+}
+
+.card:hover .bottom {
+  filter: blur(5px);
+}
+
+.card:hover .top {
+  filter: blur(0);
 }

@@ -1,51 +1,56 @@
 function show_page() {
-auth('prodadmin@test.com', show_page_secured, 'login');
+    auth('prodadmin@test.com', show_page_secured, 'login');
 }
 
 let products; // list of products to read from the db
 
+
 async function show_page_secured() {
     glPageContent.innerHTML = '<h1>Show Products</h1>'
-    glPageContent.innerHTML = `
+    glPageContent.innerHTML = `<span></span>
         <a href='/add' class="btn btn-outline-primary">Add a Product</a>
         <a href='/home' class="btn btn-outline-primary">Home</a><br><hr>
         `;
 
     try {
         products = [];
-        const snapshot = await firebase.firestore().collection(COLLECTION).get();
+        const snapshot = await firebase.firestore().collection(COLLECTION).get()
         snapshot.forEach(doc => {
-            const {name, summary, price, image, image_url} = doc.data();
-            const p = {docId: doc.id, name, summary, price, image, image_url};
+            const { name, summary, price, image, image_url } = doc.data();
+            const p = { docId: doc.id, name, summary, price, image, image_url };
             products.push(p);
         });
     }
-    catch(e) {
+    catch (e) {
         glPageContent.innerHTML = "<h1> Error! Firestore access, please try again later. <br>" + e + "<br></h1>";
         return;
     }
 
-    if(!(products.length > 0)) {
+    if (!(products.length > 0)) {
         glPageContent.innerHTML += '<h1> No Products in the database </h1>';
     }
 
-    for(const i in products) {
+    for (const i in products) {
         const product = products[i];
-        if(!product) {
+        if (!product) {
             continue;
         }
 
         glPageContent.innerHTML += `
-            <div id="${product.docId}"class="card" style="width: 18rem; display: inline-block; padding: 10px;">
-            <img src="${product.image_url}" class="card-img-top" alt="">
-                <div class="card-body">
+        <div id="${product.docId}"class="card" style="width: 18rem; display: inline-block; padding: 10px;">
+            <img src="${product.image_url}" class="card-img-top top" alt="">
+            <div class="card-body bottom ">
                     <h5 class="card-title">${product.name}</h5>
-                    <p class="card-text">$${product.price} <br>${product.summary}</p>
+                    <p class="card-text">${product.price} <br>${product.summary}</p>
+                    </div>
                     <button class="btn btn-primary" type="button" onclick="editProduct(${i})">Edit</button>
                     <button class="btn btn-primary" type="button" onclick="deleteProduct(${i})">Delete</button>
-                </div>
+                 </div>
+                 </div>
+
             </div>
-        `;
+            </div>
+            `;
     }
 }
 
@@ -100,36 +105,36 @@ async function update(index) {
     summaryErrorTag.innerHTML = validate_summary(newSummary);
     priceErrorTag.innerHTML = validate_price(newPrice);
 
-    if(nameErrorTag.innerHTML || summaryErrorTag.innerHTML || priceErrorTag.innerHTML) {
+    if (nameErrorTag.innerHTML || summaryErrorTag.innerHTML || priceErrorTag.innerHTML) {
         return;
     }
 
     // ready to update
     let updated = false;
     const newInfo = {};
-    if (p.name !== newName){
+    if (p.name !== newName) {
         newInfo.name = newName;
         updated = true;
     }
-    if (p.summary !== newSummary){
+    if (p.summary !== newSummary) {
         newInfo.summary = newSummary;
         updated = true;
     }
-    if (p.price !== newPrice){
+    if (p.price !== newPrice) {
         newInfo.price = Number(Number(newPrice).toFixed(2));
         updated = true;
     }
     if (imageFile2Update) {
         updated = true;
     }
-    if(!updated) {
+    if (!updated) {
         cancel(index);
         return;
     }
 
     //update database
     try {
-        if(imageFile2Update) {
+        if (imageFile2Update) {
             const imageRef2del = firebase.storage().ref().child(IMAGE_FOLDER + p.image);
             await imageRef2del.delete();
             const image = Date.now() + imageFile2Update.name;
@@ -143,7 +148,7 @@ async function update(index) {
         await firebase.firestore().collection(COLLECTION).doc(p.docId).update(newInfo);
         window.location.href = '/show';
     }
-    catch(e) {
+    catch (e) {
         glPageContent.innerHTML = `
             <h1> Error on update! <br> ${JSON.stringify(e)} <br></h1>
         `;
@@ -162,13 +167,13 @@ async function deleteProduct(index) {
         await firebase.firestore().collection(COLLECTION).doc(p.docId).delete();
         const imageRef = firebase.storage().ref().child(IMAGE_FOLDER + p.image);
         await imageRef.delete()
-        
+
         const card = document.getElementById(p.docId);
         card.parentNode.removeChild(card);
 
         delete products[index];
     }
-    catch(e) {
+    catch (e) {
         glPageContent.innerHTML = `
             <h1> Error on delete! <br> ${JSON.stringify(e)} <br></h1>
         `;
