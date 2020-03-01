@@ -21,6 +21,7 @@ app.get('/add', frontendHandler);
 app.get('/show', frontendHandler);
 
 // Backend programming
+const firebase = require('firebase')
 
 // Your web app's Firebase configuration
 var firebaseConfig = {
@@ -31,10 +32,9 @@ var firebaseConfig = {
     storageBucket: "brianl-wsp20.appspot.com",
     messagingSenderId: "926690846030",
     appId: "1:926690846030:web:28064a81febe7141212a1f"
-};
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
 
 const Constants = require('./myconstants.js');
 
