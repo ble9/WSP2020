@@ -1,20 +1,63 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@2.3.2/dist/email.min.js"></script>
 
-    <%- include('partials/header.ejs') %> 
+    <%- include('partials/header.ejs') %>
 
-    <title>Contact Us</title>
-  </head>
-  <body>
+        <title>Contact Us</title>
+</head>
+
+<body>
     <%- include('partials/nav.ejs', {page: 'contact', user}) %>
-    <h1>Contact Us</h1>
-    
-    
+        <h1>Contact Us</h1>
 
-    <%- include('partials/scripts.ejs') %> 
-  </body>
+        <div class="container">
+            <form>
+                <div class="col-sm-3 my-1" id="horizontalAlign">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" name="name" id="name" placeholder="Enter Name" required>
+                </div>
+                <div class="col-sm-3 my-1" id="horizontalAlign">
+                    <label for="email">Email address</label>
+                    <input type="email" class="form-control" name="email" id="email" placeholder="Enter email" required>
+                </div>
+                <div class="col-sm-3 my-1" id="horizontalAlign">
+                    <label for="subject">Subject</label>
+                    <input type="text" class="form-control" name="subject" id="subject" placeholder="Enter Subject" required>
+                </div>
+                <div class="col-sm-3 my-1" id="horizontalAlign">
+                    <label for="description"></label>
+                    <textarea type="text" class="form-control" name="description" id="description" rows="8" required></textarea>
+                </div>
+                <div class="text-center">
+                    <button type="button" onclick="getEmail()" class="btn btn-outline-info">Send</button>
+                </div>
+            </form>
+        </div>
+        <%- include('partials/scripts.ejs') %>
+
+            <script type="text/javascript">
+                (function() {
+                    emailjs.init("user_kSX943GxVcO0e6swEwllI");
+                })();
+
+                function getEmail() {
+                    var template_params = {
+                        "reply_to": "name_value",
+                        "from_name": "subject_value",
+                        "to_name": "email_value",
+                        "message_html": "description_value"
+                    }
+                    var service_id = "default_service";
+                    var template_id = "template_KbVHwxJB";
+                    emailjs.send(service_id, template_id, template_params);
+                }
+            </script>
+</body>
+
 </html>
