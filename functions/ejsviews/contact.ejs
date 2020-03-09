@@ -2,57 +2,59 @@
 <html lang="en">
 
 <head>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@2.4.1/dist/email.min.js"></script>
-    <!-- <script type="text/javascript">
-        // window.onload = function () {
-        //     document.getElementById('contact-form').addEventListener('submit', function (event) {
-        //         event.preventDefault();
-        //     }
-    </script> -->
     <%- include('partials/header.ejs') %>
-
-    <title>Contact Us</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@2.3.2/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function () {
+            emailjs.init("user_kSX943GxVcO0e6swEwllI");
+        })();    
+    </script>
 </head>
 
 <body>
     <%- include('partials/nav.ejs', {page: 'contact', user}) %>
     <h1>Contact Us</h1>
+
     <div class="container">
-        <form id="contact-form">
-            <input type="hidden" name="contact_number">
-            <label>Name</label>
-            <input type="text" name="user_name">
-            <label>Email</label>
-            <input type="email" name="user_email">
-            <label>Message</label>
-            <textarea name="message"></textarea>
-            <input type="submit" value="Send">
-        </form>
+        <form id="myform" onsubmit="emailjs.sendForm('default_service', 'template_KbVHwxJB', this);
+     return false;" method="post">
+
+    <div class="col-sm-3 my-1" id="horizontalAlign"></div>
+        <input type="hidden" name="reply_to" />
     </div>
+    <div class="col-sm-3 my-1" id="horizontalAlign"></div>
+        <label>From:</label>
+        <input type="text" class="form-control" name="from_name" placeholder="Enter Name" required>
+     </div>
+    <div class="col-sm-3 my-1" id="horizontalAlign"></div>
+            <label>Subject:</label>
+            <input type="text" class="form-control" name="subject_name" placeholder="Enter Subject" required>
+    </div>
+    <div class="col-sm-3 my-1" id="horizontalAlign"></div>
+        <label>Message</label>
+        <textarea type="text" class="form-control" name="message_html" id="description" rows="8" required></textarea>
+    </div>
+    <br><br>
+    <button class="btn btn-outline-info">Send </button>
+        </form>
+</div>
     <%- include('partials/scripts.ejs') %>
-<script>
-        function formSubmit(event) {
-            event.preventDefault();
-            var template_params = {
-                "reply_to": "user_email_value",
-                "from_name": "user_name_value",
-                "to_name": "contact_number_value",
-                "message_html": "message_value"
-            }
-            var service_id = "default_service";
-            var template_id = "template_KbVHwxJB_clone";
-            emailjs.send(service_id, template_id, template_params);
-        };
-        var myform = $("form#forms");
+    <script type="text/javascript">
+        (function () {
+            emailjs.init("user_kSX943GxVcO0e6swEwllI");
+        })();
+        var myform = $("form#myform");
         myform.submit(function (event) {
             event.preventDefault();
+
             // Change to your service ID, or keep using the default service
             var service_id = "default_service";
-            var template_id = "template_KbVHwxJB_clone";
-            myform.find("button").text(["Sending..."]);
-            emailjs.sendForm(service_id, template_id, "myForm")
+            var template_id = "template_KbVHwxJB";
+
+            myform.find("button").text("Sending...");
+            emailjs.sendForm(service_id, template_id, myform[0])
                 .then(function () {
-                    //alert("Sent!");
+                    alert("Sent!");
                     myform.find("button").text("Send");
                 }, function (err) {
                     alert("Send email failed!\r\n Response:\n " + JSON.stringify(err));
@@ -60,21 +62,7 @@
                 });
             return false;
         });
-                // function getEmail() {
-                    // var template_params = {
-                        // "reply_to": "name_value",
-                        // "message_html": "Send_value"
-                //     }
-                    // var service_id = "default_service";
-                    // var template_id = "template_KbVHwxJB";
-                    // emailjs.send(service_id,template_id , this);
-                // }
-            </script>
-                <script type="text/javascript">
-                    (function () {
-                        emailjs.init("user_kSX943GxVcO0e6swEwllI");
-                    })();
-            </script>
+    </script>
 </body>
 
 </html>
