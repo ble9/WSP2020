@@ -8,11 +8,11 @@
 
     <%- include('partials/header.ejs') %>
 
-        <title>Sign In</title>
+        <title>Sign Up</title>
 </head>
 
 <body>
-    <%- include('partials/nav.ejs', {page: 'signIn', user}) %>
+    <%- include('partials/nav.ejs', {page: 'signup', user}) %>
 
         <% if (error) { %>
             <p style="color: red">
@@ -20,16 +20,17 @@
             </p>
             <% } %>
 
-                <form class="form-signin" action="/b/signIn" method="POST">
-                    <h3>Please Sign In</h3>
+                <form class="form-signin" action="/admin/signup" method="POST">
+                    <h3>Create an Account</h3>
                     <input type="email" class="form-control" name="email" placeholder="Enter email">
                     <input type="password" class="form-control" name="password" placeholder="Password">
+                    <input type="text" class="form-control" name="displayName" placeholder="Display Name">
+                    <input type="text" class="form-control" name="phoneNumber" placeholder="+1-000-000-0000">
+                    <input type="text" class="form-control" name="photoURL" placeholder="Profile Image URL">
+
+
                     <button type="submit" class="btn btn-primary">Sign In</button>
                 </form>
-                    <br>
-                    <div>Do not have an account?
-                        <a herf = '/b/signup' > Create an account</a>
-                    </div>
                 <%- include('partials/scripts.ejs') %>
 </body>
 

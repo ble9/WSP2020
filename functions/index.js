@@ -52,6 +52,7 @@ app.get('/', auth, async(req, res) => {
     }
 });
 
+
 app.get('/b/about', auth, async(req, res) => {
     res.render('about.ejs', { user: req.user });
 });
@@ -92,6 +93,10 @@ app.get('/b/profile', auth, (req, res) => {
     } else {
         res.render('profile', { user: req.user });
     }
+});
+
+app.get('/b/signup', auth, async(req, res) => {
+    res.render('signup.ejs', { page:'signup', user:null  });
 });
 
 // middle ware authentication function
