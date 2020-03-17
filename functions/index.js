@@ -21,13 +21,12 @@ app.get('/add', frontendHandler);
 app.get('/show', frontendHandler);
 
 // Backend programming
-const session = require ('express-session')
-app.use(session(
-{secretL 'anysecretstring.fdafdsafdsa',
-saveUninitialized: false,
-resave:false
-}
-))
+const session = require('express-session')
+app.use(session({
+    secret: 'anysecretstring.fdafdsafdsa',
+    saveUninitialized: false,
+    resave: false
+}))
 
 const firebase = require('firebase')
 
@@ -40,9 +39,9 @@ var firebaseConfig = {
     storageBucket: "brianl-wsp20.appspot.com",
     messagingSenderId: "926690846030",
     appId: "1:926690846030:web:28064a81febe7141212a1f"
-  };
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
 
 const Constants = require('./myconstants.js');
 
@@ -80,10 +79,10 @@ app.post('/b/signIn', async(req, res) => {
 
     try {
         const userRecord = await auth.signInWithEmailAndPassword(email, password);
-        if(userRecord.user.email=== Constants.SYSADMINEMAIL){
-                res.redirect('/admin/sysadmin')
-        }else
-        res.redirect('/');
+        if (userRecord.user.email === Constants.SYSADMINEMAIL) {
+            res.redirect('/admin/sysadmin')
+        } else
+            res.redirect('/');
     } catch (e) {
         res.render('signIn', { error: e, user: req.user });
     }
@@ -107,7 +106,7 @@ app.get('/b/profile', auth, (req, res) => {
 });
 
 app.get('/b/signup', auth, async(req, res) => {
-    res.render('signup.ejs', { page:'signup', user:null, error:false  });
+    res.render('signup.ejs', { page: 'signup', user: null, error: false });
 });
 
 // middle ware authentication function
@@ -115,29 +114,59 @@ function auth(req, res, next) {
     req.user = firebase.auth().currentUser;
     next();
 }
-const adminUtil = require ('./adminUtil.js')
+const adminUtil = require('./adminUtil.js')
 
 
-app.post('/admin/signup',(req,res) =>{
-    return adminUtil.createUser(req,res)
+app.post('/admin/signup', (req, res) => {
+    return adminUtil.createUser(req, res)
 
-}) 
+})
+const ShoppingCart = require('./model/ShoppingCart.js')
 
-app.get('/admin/sysadmin',  authSysadmin, ( req,res) => {
+app.post('/b/add2cart', async(req, res) => {
+    const id = req.body.docId
+    const collection = firebase.firestore().collection(Constants.COLL_PRODUCTS)
+    try {
+        const doc = await collection.doc(id).get()
+        let cart;
+        if (!req.session.cart) {
+            //first time added to art
+            cart = new ShoppingCart()
+        } else {
+            cart = shoppingCart.deserialize(res.session.cart)
+        }
+        const { name, price, summary, image, image_url } = doc.data()
+        cart.add({ id, name, price, summart, image, image_url })
+        res.session.cart = cart.serialize()
+        res.redirect('/b/shoppingcart')
+    } catch (e) {
+        res.send(JSON.stringify(e))
+    }
+})
+app.get('/b/shoppingcart', (req, res) => {
+    let cart
+    if (!req.session.cart) {
+        cart = new ShoppingCart()
+    } else {
+        cart = ShoppingCart.deserialize(req.session.cart)
+    }
+    res.render('shoppingcart.ejs', { cart, user: false })
+})
+app.get('/admin/sysadmin', authSysadmin, (req, res) => {
     res.render('./admin/sysadmin.ejs')
 })
-app.get('/admin/listUsers', authSysadmin, (req,res ) =>{
-    return adminUtil.listUsers( req, res )
+app.get('/admin/listUsers', authSysadmin, (req, res) => {
+    return adminUtil.listUsers(req, res)
 })
-function authSysadmin(req,res,next){
+
+function authSysadmin(req, res, next) {
     const user = firebase.auth().currentUser
-    if (!user || !user.email || user.email !== Constants.SYSADMINEMAIL)
-    {
+    if (!user || !user.email || user.email !== Constants.SYSADMINEMAIL) {
         res.send('<h1> System admin Page : access denied !</h1>')
-    }else {
+    } else {
         next()
     }
- }
+}
 // test code
 
 app.get('/testLogin', (req, res) => {
@@ -153,8 +182,7 @@ app.post('/testSignIn', (req, res) => {
 app.get('/test', (req, res) => {
     const time = new Date().toString();
     let page = `
-        <h1>Current time at server: ${time}</h1>
-    `;
+        <h1>Current time at server: ${time}</h1>`;
     res.send(page);
 });
 
