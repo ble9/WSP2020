@@ -71,7 +71,10 @@ app.post('/b/signIn', async(req, res) => {
     const auth = firebase.auth();
 
     try {
-        const user = await auth.signInWithEmailAndPassword(email, password);
+        const userRecord = await auth.signInWithEmailAndPassword(email, password);
+        if(userRecord.user.email=== Constants.SYSADMINEMAIL){
+                res.redirect('/admin/sysadmin')
+        }else
         res.redirect('/');
     } catch (e) {
         res.render('signIn', { error: e, user: req.user });
@@ -96,7 +99,7 @@ app.get('/b/profile', auth, (req, res) => {
 });
 
 app.get('/b/signup', auth, async(req, res) => {
-    res.render('signup.ejs', { page:'signup', user:null  });
+    res.render('signup.ejs', { page:'signup', user:null, error:false  });
 });
 
 // middle ware authentication function
@@ -104,10 +107,29 @@ function auth(req, res, next) {
     req.user = firebase.auth().currentUser;
     next();
 }
+const adminUtil = require ('./adminUtil.js')
 
 
+app.post('/admin/signup',(req,res) =>{
+    return adminUtil.createUser(req,res)
 
+}) 
 
+app.get('/admin/sysadmin',  authSysadmin, ( req,res) => {
+    res.render('./admin/sysadmin.ejs')
+})
+app.get('/admin/listUsers', authSysadmin, (req,res ) =>{
+    res.send('List Users')
+})
+function authSysadmin(req,res,next){
+    const user = firebase.auth().currentUser
+    if (!user || !user.email || user.email !== Constants.SYSADMINEMAIL)
+    {
+        res.send('<h1> System admin Page : access denied !</h1>')
+    }else {
+        next()
+    }
+ }
 // test code
 
 app.get('/testLogin', (req, res) => {
