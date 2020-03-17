@@ -29,9 +29,10 @@ async function listUsers(req,res) {
         const userRecord = await admin.auth().listUsers()
         res.render('admin/listUsers.ejs', {users: userRecord.users, error: false})
     }catch (e) {
-        res.render('admin/listUsers.ejs', {users: userRecord.users, error: e})
+        res.render('admin/listUsers.ejs', {users: false, error: e})
     }
 }
 module.exports ={
-    createUser
+    createUser,
+    listUsers
 }

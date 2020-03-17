@@ -21,6 +21,14 @@ app.get('/add', frontendHandler);
 app.get('/show', frontendHandler);
 
 // Backend programming
+const session = require ('express-session')
+app.use(session(
+{secretL 'anysecretstring.fdafdsafdsa',
+saveUninitialized: false,
+resave:false
+}
+))
+
 const firebase = require('firebase')
 
 // Your web app's Firebase configuration
@@ -119,7 +127,7 @@ app.get('/admin/sysadmin',  authSysadmin, ( req,res) => {
     res.render('./admin/sysadmin.ejs')
 })
 app.get('/admin/listUsers', authSysadmin, (req,res ) =>{
-    res.send('List Users')
+    return adminUtil.listUsers( req, res )
 })
 function authSysadmin(req,res,next){
     const user = firebase.auth().currentUser

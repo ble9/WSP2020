@@ -12,20 +12,19 @@
 </head>
 <body>
     <h1>List of Users</h1>
-    <a href= "/admin/listUsers" class ="btn btn-outline-primary"> List Users</a> "
-
+    <a href= "/admin/listUsers.ejs" class ="btn btn-outline-primary"> System Admin Home</a> 
 
     <% if (!error) { %>
-        <h1> List Of Users </h1>
         <br>
-        <%users.forEach (u => { <% 
-            Eamil: <%= u.email %> <br>
-            DisplayName <% = u.displayName %> <br>
-            PhoneNmberL <%= u.PhoneNmber %><br>
-            <img src = "<%= u.photourl %> "> <br> <br>
+        <% users.forEach (u => { %> 
+            Email: <%= u.email %> <br>
+            DisplayName <%= u.displayName %> <br>
+            PhoneNumber <%= u.PhoneNumber %><br>
+            <img src = "<%= u.photoURL%> "> <br> <br>
 
-        <%})%>
+        <% }) %>
 <% } else { %>
+<%= error %> 
 <% } %> 
 
     <%- include('../partials/scripts.ejs') %>
