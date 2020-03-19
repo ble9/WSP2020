@@ -123,7 +123,7 @@ app.post('/admin/signup', (req, res) => {
 })
 const ShoppingCart = require('./model/ShoppingCart.js')
 
-app.post('/b/add2cart', async(req, res) => {
+app.post('/b/add2cart', async (req, res) => {
     const id = req.body.docId
     const collection = firebase.firestore().collection(Constants.COLL_PRODUCTS)
     try {
@@ -133,16 +133,17 @@ app.post('/b/add2cart', async(req, res) => {
             //first time added to art
             cart = new ShoppingCart()
         } else {
-            cart = shoppingCart.deserialize(res.session.cart)
+            cart = ShoppingCart.deserialize(req.session.cart)
         }
         const { name, price, summary, image, image_url } = doc.data()
-        cart.add({ id, name, price, summart, image, image_url })
-        res.session.cart = cart.serialize()
+        cart.add({ id, name, price, summary, image, image_url })
+        req.session.cart = cart.serialize()
         res.redirect('/b/shoppingcart')
     } catch (e) {
         res.send(JSON.stringify(e))
     }
 })
+
 app.get('/b/shoppingcart', (req, res) => {
     let cart
     if (!req.session.cart) {
@@ -150,8 +151,10 @@ app.get('/b/shoppingcart', (req, res) => {
     } else {
         cart = ShoppingCart.deserialize(req.session.cart)
     }
+    // res.send(JSON.stringify(cart.contents))
     res.render('shoppingcart.ejs', { cart, user: false })
 })
+
 app.get('/admin/sysadmin', authSysadmin, (req, res) => {
     res.render('./admin/sysadmin.ejs')
 })
@@ -162,9 +165,9 @@ app.get('/admin/listUsers', authSysadmin, (req, res) => {
 function authSysadmin(req, res, next) {
     const user = firebase.auth().currentUser
     if (!user || !user.email || user.email !== Constants.SYSADMINEMAIL) {
-        res.send('<h1> System admin Page : access denied !</h1>')
+       return res.send('<h1> System admin Page : access denied !</h1>')
     } else {
-        next()
+        return next()
     }
 }
 // test code

@@ -23,17 +23,11 @@
                     <div class="card" style="width: 18rem; display: inline-block;">
                         <img src="<%= p.data.image_url %>" class="card-img-top">
                         <div class="card-body">
-                            <h5 class="card-title">
-                                <%= p.data.name %>
-                            </h5>
-                            <p class="card-text">$(
-                                <%= p.data.price %>)<br>
-                                    <%= p.data.summary %>
-                            </p>
-                            <a href="#" class="btn btn-primary">Buy</a>
+                            <h5 class="card-title"><%= p.data.name %></h5>
+                            <p class="card-text">$(<%= p.data.price %>)<br><%= p.data.summary %></p>
                             <form action="/b/add2cart" method="post">
-                                <input type="hidden" name="docID" value="<%= p.id%>">
-                                <button type="submit" class="btn btn-primary"> add to ShoppingCart </button>
+                                <input type="hidden" name="docId" value="<%= p.id %>">
+                                <button type="submit" class="btn btn-primary"> Add to ShoppingCart </button>
                             </form>
                         </div>
                     </div>
