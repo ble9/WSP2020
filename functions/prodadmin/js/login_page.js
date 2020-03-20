@@ -8,13 +8,13 @@ function login_page() {
         <h3>  Please Sign In</h3>
           <input type="email" class="form-control" id="email" placeholder ="Email address">
           <input type="password" class="form-control" id="password" placeholder ="Password">
-        <button type="button" class="btn btn-primary" onclick="signIn()">Submit</button>
+        <button type="button" class="btn btn-primary" onclick="signin()">Submit</button>
       </form>`;
     }
   })
 }
 
-async function signIn() {
+async function signin() {
 
   try {
     const email = document.getElementById('email').value

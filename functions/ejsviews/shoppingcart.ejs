@@ -13,6 +13,9 @@
 
 <body>
 <%- include('partials/nav.ejs', {page:'shoppingcart' }) %>
+<% if(message) { %>
+  <div style ="color: red; " ><h4><%= message %> </h4></div>
+<% } %>
 <h1>Shopping Cart Contents</h1>
 <table class="table table-striped">
     <thead>
@@ -21,6 +24,7 @@
         <th scope="col">Name</th>
         <th scope="col">Price</th>
         <th scope="col">Qty</th>
+        <th scope="col">Subtotal</th>
         <th scope="col">Summary</th>
       </tr>
     </thead>
@@ -31,13 +35,21 @@
         <td><%= cart.contents[i].product.name %></td>
         <td><%= cart.contents[i].product.price.toFixed(2) %></td>
         <td><%= cart.contents[i].qty %></td>
+        <td><%= (cart.contents[i].qty * cart.contents[i].product.price).toFixed(2) %> </td>
         <td><%= cart.contents[i].product.summary %></td>
-    </tr>
       <% } %>
     </tbody>
   </table>
-
+  <h2> Total: <%= cart.getTotal().toFixed(2)%> </h2>
+  
+  <% if (cart.contents.lengh > 0) { %>
+    <div>
+      <form action ="/b/checkout" method="post">
+        <button type = "submit" class="btn btn-primary"> Check Out </button>
+      </form>
+    </div>
+  <% } %>
+  
 <%- include('partials/scripts.ejs') %>
 </body>
-
 </html>
