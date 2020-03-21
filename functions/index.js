@@ -119,11 +119,11 @@ app.get('/b/signOut', async(req, res) => {
 app.get('/b/profile', authAndRedirectSignIn, (req, res) => {
         const cartCount = req.session.cart ? req.session.cart.length : 0
         res.setHeader('Cache-Control', 'private');
-        res.render('profile', { user: req.user, cartCount, order:false });
+        res.render('profile', { user: req.user, cartCount, orders:false });
 })
 
 app.get('/b/signup', (req, res) => {
-    res.render('signup.ejs', { page: 'signup', user: null, error: false, cartCount:0 })
+    res.render('signup.ejs', { page: 'signup', user: null, error: false, cartCount: 0 })
 })
 
 const ShoppingCart = require('./model/ShoppingCart.js')
@@ -159,7 +159,7 @@ app.get('/b/shoppingcart', authAndRedirectSignIn, (req, res) => {
         cart = ShoppingCart.deserialize(req.session.cart)
     }
     res.setHeader('Cache-Control', 'private');
-    res.render('shoppingcart.ejs', { message :false, cart, user: req.user, cartCount: cart.contents.length})
+    res.render('shoppingcart.ejs', { message :false, cart, user: req.user, cartCount: cart.contents.length })
 })
 
 app.post('/b/checkout', authAndRedirectSignIn, async (req,res )=>{
@@ -208,7 +208,7 @@ function authAndRedirectSignIn(req, res, next) {
     const user = firebase.auth().currentUser
     if(!user) {
         res.setHeader('Cache-Control', 'private');
-        return res.redirect('/b/sigin')
+        return res.redirect('/b/signin')
     } else {
         req.user = user
         return next()

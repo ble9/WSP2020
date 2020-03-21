@@ -42,7 +42,7 @@
   </table>
   <h2> Total: <%= cart.getTotal().toFixed(2)%> </h2>
   
-  <% if (cart.contents.lengh > 0) { %>
+  <% if (cart.contents.length > 0)  { %>
     <div>
       <form action ="/b/checkout" method="post">
         <button type = "submit" class="btn btn-primary"> Check Out </button>
