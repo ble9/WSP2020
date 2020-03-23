@@ -119,7 +119,7 @@ app.get('/b/signOut', async(req, res) => {
 app.get('/b/profile', authAndRedirectSignIn, (req, res) => {
         const cartCount = req.session.cart ? req.session.cart.length : 0
         res.setHeader('Cache-Control', 'private');
-        res.render('profile', { user: req.user, cartCount, orders:false });
+        res.render('profile', { user: req.user, cartCount, orders: false });
 })
 
 app.get('/b/signup', (req, res) => {
@@ -188,9 +188,9 @@ app.post('/b/checkout', authAndRedirectSignIn, async (req,res )=>{
 })
 
 
-app.get ('/b/orderhistory', authAndRedirectSignIn, async (req,res) =>{
+app.get('/b/orderhistory', authAndRedirectSignIn, async (req,res) =>{
     try {
-        const collection = firebase.firestore ().collection(Constants.COLL_ORDERS)
+        const collection = firebase.firestore().collection(Constants.COLL_ORDERS)
         let orders= []
         const snapshot = await collection.where("uid", "==", req.user.uid).orderBy("timestamp").get()
         snapshot.forEach(doc=> {
@@ -198,8 +198,9 @@ app.get ('/b/orderhistory', authAndRedirectSignIn, async (req,res) =>{
         })
         res.setHeader('Cache-Control', 'private');
         res.render('profile.ejs', {user: req.user, cartCount: 0, orders})
-    } catch (e){
+    } catch (e) {
         res.setHeader('Cache-Control', 'private');
+        // res.send('ERROR')
         res.send('<h1> Order History error <h1>')
     }   
 })
