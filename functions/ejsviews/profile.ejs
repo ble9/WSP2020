@@ -10,57 +10,60 @@
     <title>Profile</title>
   </head>
   <body>
-    <%- include('partials/nav.ejs', { page: 'profile', user}) %>
+    <%- include('partials/nav.ejs', {page: 'profile', user}) %>
     <h1>Profile</h1>
-    <table class= " table table-stripped">
-      <tr> 
-        <td> Display Name</td>
-        <td> <%= user.displayName %></td>
+    <% JSON.stringify(user) %>
+    <table class="table table-stripped">
+      <tr>
+        <td>Display Name</td>
+        <td><%= user.displayName %></td>
       </tr>
-      <tr> 
-        <td> Email</td>
-        <td> <%= user.email %></td>
+
+      <tr>
+        <td>Email</td>
+        <td><%= user.email %></td>
       </tr>
-      <tr> 
-        <td> Phone</td>
-        <td> <%= user.phoneNumber %></td>
+
+      <tr>
+        <td>Phone Number</td>
+        <td><%= user.phoneNumber %></td>
       </tr>
-      <tr> 
-        <td> UID</td>
-        <td> <%= user.uid %></td>
+
+      <tr>
+        <td>UID</td>
+        <td><%= user.uid %></td>
       </tr>
-      <tr> 
-        <td> Profile Image</td>
-        <td> <img src ="<%= user.photo_url %>"></td>
+
+      <tr>
+        <td>Profile Image</td>
+        <td><img src="<%= user.photoURL %>"></td>
       </tr>
-      <tr></tr>
     </table>
 
-    <a href= "/b/orderhistory" class= "btn btn-primary">Order History</a>
-   
+    <a href="/b/orderhistory" class="btn btn-primary">Order History</a>
+
     <% if (!orders) { %>
       <% } else { %> 
-        <!-- <% JSON.stringify(orders )%> -->
     <% orders.forEach(order => { %>
-    Order Date: <%= order.timestamp.toDate() %> -->
-     <table class = "table table-stripped">
-      <tr> 
+    Order Date: <%= order.timestamp.toDate() %> 
+     <table class="table table-stripped">
+      <tr>
         <th></th>
         <th>Name</th>
         <th>Unit Price</th>
-        <th>Qty</th>
+        <th>Quantity</th>
       </tr>
-      <% for (let i=0; i < order.cart.length; i++) { %>
+      <% for (let i = 0; i < order.cart.length; i++) { %>
         <tr>
-          <td><img src= "<%=order.cart[i].product.image_url%>" height ="50" width ="50"></td>
+          <td><img src="<%= order.cart[i].product.image_url %>" height="50", width="50"></td>
           <td><%= order.cart[i].product.name %></td>
           <td><%= order.cart[i].product.price %></td>
-          <td><%= order.cart[i].product.qty %></td>
+          <td><%= order.cart[i].qty %></td>
         </tr>
-        <% } %>
+      <% } %> 
     </table>
-    <% }) %>
-    <% } %>
+  <% }) %> 
+<% } %>
     <%- include('partials/scripts.ejs') %> 
   </body>
 </html>

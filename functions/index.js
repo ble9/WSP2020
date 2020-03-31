@@ -94,6 +94,7 @@ app.post('/b/signin', async (req, res) => {
             res.redirect('/admin/sysadmin')
         } else{
         if (!req.session.cart){
+            res.setHeader('Cache-Control', 'private');
             res.redirect('/')
         } else { 
             res.setHeader('Cache-Control', 'private');
@@ -222,8 +223,6 @@ function auth(req, res, next) {
 }
 
 const adminUtil = require('./adminUtil.js')
-
-
 app.post('/admin/signup', (req, res) => {
     return adminUtil.createUser(req, res)
 
@@ -243,25 +242,3 @@ function authSysadmin(req, res, next) {
        return next()
     }
 }
-// test code
-
-app.get('/testLogin', (req, res) => {
-    res.sendFile(path.join(__dirname, '/static/html/login.html'));
-});
-
-app.post('/testSignIn', (req, res) => {
-    const email = req.body.email;
-    const pass = req.body.pass;
-    res.render('home', { email, pass, c: '<h1> Login Success </h1>', d: '<h1> Login Success Fake</h1>', start: 0, end: 10 });
-});
-
-app.get('/test', (req, res) => {
-    const time = new Date().toString();
-    let page = `
-        <h1>Current time at server: ${time}</h1>`;
-    res.send(page);
-});
-
-app.get('/test2', (req, res) => {
-    res.redirect('http://www.google.com');
-});

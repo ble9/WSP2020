@@ -1,34 +1,32 @@
 <!doctype html>
 <html lang="en">
-
-<head>
+  <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <%- include('partials/header.ejs') %>
+    <%- include('partials/header.ejs') %> 
 
-        <title>Sign In</title>
-</head>
+    <title>Sign In</title>
+  </head>
+  <body>
+    <%- include('partials/nav.ejs', {page: 'signIn', user}) %>
+    
+    <form class="form-signin" action="/b/signIn" method="POST">
+        <h3>Please Sign In</h3>
+        <% if (error) { %>
+          <p style="color: red"> <%= error %> </p>
+      <% } %>
+        <input type="email" class="form-control" name="email" placeholder="Enter email">
+        <input type="password" class="form-control" name="password" placeholder="Password">
+        <button type="submit" class="btn btn-primary">Sign In</button>
+        <br>
+        <div>
+          Do not have an account?
+          <a href='/b/signup'>Create an account.</a>
+        </div>
+    </form>
 
-<body>
-    <%- include('partials/nav.ejs', {page: 'signin', user}) %>
-                <form class="form-signin" action="/b/signin" method="POST">
-                    <h3>Please Sign In</h3>
-                    <% if (error) { %>
-                        <p style="color: red">
-                            <%= error %>
-                        </p>
-                        <% } %>
-                    <input type="email" class="form-control" name="email" placeholder="Enter email">
-                    <input type="password" class="form-control" name="password" placeholder="Password">
-                    <button type="submit" class="btn btn-primary">Sign In</button>
-                </form>
-                    <br>
-                    <div>Do not have an account?
-                        <a href = '/b/signup' > Create an account</a>
-                    </div>
-                <%- include('partials/scripts.ejs') %>
-</body>
-
+    <%- include('partials/scripts.ejs') %> 
+  </body>
 </html>
