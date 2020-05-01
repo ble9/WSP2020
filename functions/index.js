@@ -28,11 +28,10 @@ app.use(session({
     saveUninitialized: false,
     resave: false,
     secure: true, //https
-    maxAge: 1000*60*60*2, //2 hours
-    rolling: true, //resert magege 
+    maxAge: 1000 * 60 * 60 * 2, //2 hours
+    rolling: true, //resert magege
 
-}
-))
+}))
 
 const firebase = require('firebase')
 
@@ -51,16 +50,23 @@ firebase.initializeApp(firebaseConfig);
 const adminUtil = require('./adminUtil.js')
 
 const Constants = require('./myconstants.js');
+let lastVisible;
+let prev;
+let lastVisiblePerPage = {};
+let i;
 
-app.get('/', auth, async (req, res) => {
+app.get('/', auth, async(req, res) => {
+    i = 1;
     const cartCount = req.session.cart ? req.session.cart.length : 0
     const coll = firebase.firestore().collection(Constants.COLL_PRODUCTS);
     try {
         let products = [];
-        const snapshot = await coll.orderBy("name").get();
+        const snapshot = await coll.orderBy("price").limit(10).get();
         snapshot.forEach(doc => {
-            products.push({ id: doc.id, data: doc.data()})
+            products.push({ id: doc.id, data: doc.data() })
         })
+        lastVisible = snapshot.docs[snapshot.docs.length - 1];
+        lastVisiblePerPage[i] = lastVisible;
         res.setHeader('Cache-Control', 'private');
         res.render('storefront.ejs', { error: false, products, user: req.decodedIdToken, cartCount })
     } catch (e) {
@@ -68,6 +74,57 @@ app.get('/', auth, async (req, res) => {
         res.render('storefront.ejs', { error: e, user: req.decodedIdToken, cartCount })
     }
 })
+app.get('/b/prev', auth, async(req, res) => {
+    i--;
+    if (i < 1) {
+        res.redirect('/')
+    }
+    const cartCount = req.session.cart ? req.session.cart.length : 0
+    const coll = firebase.firestore().collection(Constants.COLL_PRODUCTS);
+
+    try {
+        let products = [];
+        const snapshot = await coll.orderBy("price")
+            .startAfter(lastVisiblePerPage[i - 1])
+            .limit(10)
+            .get();
+        snapshot.forEach(doc => {
+            products.push({ id: doc.id, data: doc.data() })
+        })
+        lastVisible = snapshot.docs[snapshot.docs.length - 1];
+        res.setHeader('Cache-Control', 'private');
+        res.render('storefront.ejs', { error: false, products, user: req.decodedIdToken, cartCount })
+    } catch (e) {
+        res.setHeader('Cache-Control', 'private');
+        res.render('storefront.ejs', { error: e, user: req.decodedIdToken, cartCount })
+    }
+})
+app.get('/b/next', auth, async(req, res) => {
+    i++;
+    const cartCount = req.session.cart ? req.session.cart.length : 0
+    const coll = firebase.firestore().collection(Constants.COLL_PRODUCTS);
+    try {
+        let products = [];
+        const snapshot = await coll.orderBy("price")
+            .startAfter(lastVisible)
+            .limit(10)
+            .get();
+        snapshot.forEach(doc => {
+            products.push({ id: doc.id, data: doc.data() })
+        })
+        lastVisible = snapshot.docs[snapshot.docs.length - 1];
+        lastVisiblePerPage[i] = lastVisible;
+        if (products.length < 1) {
+            res.redirect('/')
+        }
+        res.setHeader('Cache-Control', 'private');
+        res.render('storefront.ejs', { error: false, products, user: req.decodedIdToken, cartCount })
+    } catch (e) {
+        res.setHeader('Cache-Control', 'private');
+        res.render('storefront.ejs', { error: e, user: req.decodedIdToken, cartCount })
+    }
+})
+
 
 
 app.get('/b/about', auth, (req, res) => {
@@ -85,10 +142,10 @@ app.get('/b/contact', auth, (req, res) => {
 
 app.get('/b/signin', (req, res) => {
     res.setHeader('Cache-Control', 'private');
-    res.render('signin.ejs', { error: false, user: req.decodedIdToken , cartCount:0 })
+    res.render('signin.ejs', { error: false, user: req.decodedIdToken, cartCount: 0 })
 })
 
-app.post('/b/signin', async (req, res) => {
+app.post('/b/signin', async(req, res) => {
     const email = req.body.email
     const password = req.body.password
     const auth = firebase.auth()
@@ -104,22 +161,30 @@ app.post('/b/signin', async (req, res) => {
         if (userRecord.user.email === Constants.SYSADMINEMAIL) {
             res.setHeader('Cache-Control', 'private');
             res.redirect('/admin/sysadmin')
-        } else{
-        if (!req.session.cart){
-            res.setHeader('Cache-Control', 'private');
-            res.redirect('/')
-        } else { 
-            res.setHeader('Cache-Control', 'private');
+        } else if (!userRecord.user.emailVerified) {
+            userRecord.user.sendEmailVerification().then(function() {
+                console.log("email verification send to user");
+                res.redirect('/')
+            }).catch(function(e) {
+                res.redirect('/')
+            });
+        } else {
+            if (!req.session.cart) {
+                res.setHeader('Cache-Control', 'private');
+                res.redirect('/')
+            } else {
+                res.setHeader('Cache-Control', 'private');
                 res.redirect('/b/shoppingcart')
             }
+
         }
     } catch (e) {
         res.setHeader('Cache-Control', 'private');
-        res.render('signin', { error: e, user: null, cartCount:0 });
+        res.render('signin', { error: e, user: null, cartCount: 0 });
     }
 });
 
-app.get('/b/signout', async (req, res) => {
+app.get('/b/signout', async(req, res) => {
 
     req.session.destroy(err => {
         if (err) {
@@ -132,9 +197,9 @@ app.get('/b/signout', async (req, res) => {
 });
 
 app.get('/b/profile', authAndRedirectSignIn, (req, res) => {
-        const cartCount = req.session.cart ? req.session.cart.length : 0
-        res.setHeader('Cache-Control', 'private');
-        res.render('profile', { user: req.decodedIdToken, cartCount, orders: false });
+    const cartCount = req.session.cart ? req.session.cart.length : 0
+    res.setHeader('Cache-Control', 'private');
+    res.render('profile', { user: req.decodedIdToken, cartCount, orders: false });
 })
 
 app.get('/b/signup', (req, res) => {
@@ -143,7 +208,7 @@ app.get('/b/signup', (req, res) => {
 
 const ShoppingCart = require('./model/ShoppingCart.js')
 
-app.post('/b/add2cart', async (req, res) => {
+app.post('/b/add2cart', async(req, res) => {
     const id = req.body.docId
     const quantityOption = req.body.quantityOption;
     const collection = firebase.firestore().collection(Constants.COLL_PRODUCTS)
@@ -158,8 +223,8 @@ app.post('/b/add2cart', async (req, res) => {
         }
 
         const { name, price, summary, image, image_url } = doc.data()
-      
-        for(let i = 0; i < quantityOption; i++){
+
+        for (let i = 0; i < quantityOption; i++) {
             cart.add({ id, name, price, summary, image, image_url })
         }
         req.session.cart = cart.serialize()
@@ -179,55 +244,54 @@ app.get('/b/shoppingcart', authAndRedirectSignIn, (req, res) => {
         cart = ShoppingCart.deserialize(req.session.cart)
     }
     res.setHeader('Cache-Control', 'private');
-    res.render('shoppingcart.ejs', { message :false, cart, user: req.decodedIdToken, cartCount: cart.contents.length })
+    res.render('shoppingcart.ejs', { message: false, cart, user: req.decodedIdToken, cartCount: cart.contents.length })
 })
 
-app.post('/b/checkout', authAndRedirectSignIn, async (req,res )=>{
-    if(!req.session.cart) {
+app.post('/b/checkout', authAndRedirectSignIn, async(req, res) => {
+    if (!req.session.cart) {
         res.setHeader('Cache-Control', 'private');
         return res.send('Shopping car is Empty')
     }
 
-    const data =  {
+    const data = {
         uid: req.decodedIdToken.uid,
         // timestamp: firebase.firestore.Timestamp.fromDate(new Date()),
-        cart:req.session.cart
+        cart: req.session.cart
     }
-    try{ 
+    try {
         await adminUtil.checkOut(data)
         req.session.cart = null;
         res.setHeader('Cache-Control', 'private');
-        return res.render('shoppingcart.ejs', 
-         {message: 'Checkout Successful', cart: new ShoppingCart(), user: req.decodedIdToken, cartCount:0})
-}   catch (e){
-    const cart = ShoppingCart.deserialize(req.session.cart )
-    res.setHeader('Cache-Control', 'private');
-    return res.render('shoppingcart.ejs',
-      {message: 'Checkout Declined. Try again', cart, user: req.decodedIdToken, cartCount:cart.contents.length})
-}
-})
-
-
-app.get('/b/orderhistory', authAndRedirectSignIn, async (req,res) =>{
-    try {
-       const orders = await adminUtil.getOrderHistory(req.decodedIdToken)
-        res.setHeader('Cache-Control', 'private');
-        res.render('profile.ejs', {user: req.decodedIdToken, cartCount: 0, orders})
+        return res.render('shoppingcart.ejs', { message: 'Checkout Successful', cart: new ShoppingCart(), user: req.decodedIdToken, cartCount: 0 })
     } catch (e) {
+        const cart = ShoppingCart.deserialize(req.session.cart)
         res.setHeader('Cache-Control', 'private');
-        // res.send('ERROR')
-        res.send('<h1> Order History error <h1>')
-    }   
+        return res.render('shoppingcart.ejs', { message: 'Checkout Declined. Try again', cart, user: req.decodedIdToken, cartCount: cart.contents.length })
+    }
 })
-// middle ware authentication function
-async function authAndRedirectSignIn(req, res, next) { 
-    try{
+
+
+app.get('/b/orderhistory', authAndRedirectSignIn, async(req, res) => {
+        try {
+            const orders = await adminUtil.getOrderHistory(req.decodedIdToken)
+            res.setHeader('Cache-Control', 'private');
+            res.render('profile.ejs', { user: req.decodedIdToken, cartCount: 0, orders })
+        } catch (e) {
+            res.setHeader('Cache-Control', 'private');
+            // res.send('ERROR')
+            res.send('<h1> Order History error <h1>')
+        }
+    })
+    // middle ware authentication function
+async function authAndRedirectSignIn(req, res, next) {
+    try {
         const decodedIdToken = await adminUtil.verifyIdToken(req.session.idToken)
-            if (decodedIdToken.uid) {
+        if (decodedIdToken.uid) {
             req.decodedIdToken = decodedIdToken
             return next()
-        }} catch (e){
-        console.log('-------------------------authAndRedirect error',e)
+        }
+    } catch (e) {
+        console.log('-------------------------authAndRedirect error', e)
     }
     res.setHeader('Cache-Control', 'private');
     return res.redirect('/b/signin')
@@ -235,14 +299,14 @@ async function authAndRedirectSignIn(req, res, next) {
 
 async function auth(req, res, next) {
 
-    try{
+    try {
         if (req.session && req.session.idToken) {
             const decodedIdToken = await adminUtil.verifyIdToken(req.session.idToken)
             req.decodedIdToken = decodedIdToken
-        }else{
+        } else {
             req.decodedIdToken = null
         }
-    } catch (e){
+    } catch (e) {
         req.decodedIdToken = null
     }
     next()
@@ -261,18 +325,18 @@ app.get('/admin/listUsers', authSysadmin, (req, res) => {
     return adminUtil.listUsers(req, res)
 })
 
-  async function authSysadmin(req, res, next) {
-        try {
-            const decodedIdToken = await adminUtil.verifyIdToken(req.session.idToken);
-            if (!decodedIdToken || !decodedIdToken.email || decodedIdToken.email !== Constants.SYSADMINEMAIL) {
-                return res.send('Access Denied1')
-            }
-            if (decodedIdToken.uid) {
-                req.decodedIdToken = decodedIdToken
-                return next()
-            }
-            return res.send('Access Denied0')
-        } catch (e) {
-            return res.send('Access Denied2')
+async function authSysadmin(req, res, next) {
+    try {
+        const decodedIdToken = await adminUtil.verifyIdToken(req.session.idToken);
+        if (!decodedIdToken || !decodedIdToken.email || decodedIdToken.email !== Constants.SYSADMINEMAIL) {
+            return res.send('Access Denied1')
         }
+        if (decodedIdToken.uid) {
+            req.decodedIdToken = decodedIdToken
+            return next()
+        }
+        return res.send('Access Denied0')
+    } catch (e) {
+        return res.send('Access Denied2')
     }
+}
