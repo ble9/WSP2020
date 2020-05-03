@@ -63,10 +63,62 @@ async function checkOut(data) {
     }
 }
 
+//   async function emailInvoice(data, email) {
+
+// var time = data.timestamp.toDate()
+// var emailHTML= `
+// Order Date :${time}<br>
+// <table class="table table-striped">
+//         <tr>
+//         <th></th>
+//             <th>Name</th>
+//             <th>Price</th>
+//             <th>Qty</th>
+//         </tr>`;
+//          for(let i = 0; i < data.cart.length; i++) {
+//              emailHTML +=`
+//              <tr>
+//              <td><img src = "${data.cart[i].product.image_url}" height = "50" width ="50"></td>
+//              <td>${data.cart[i].product.name} </td>
+//              <td>${data.cart[i].product.price}</td>
+//              <td>${cart.contents[i].qty}</td>
+//          </tr>
+//              `
+//              }
+           
+//     emailHTML+= `</table>`;
+//     let transporter = nodemailer.createTransport({
+//         host : "smtp.gmail.com",
+//         port:465,
+//         secure: true,
+//         auth:{
+//             user: "th3blproject@gmail.com",
+//             pass: "FriedRice22"
+//     }
+//     });
+//     let info = await transporter.sendMail({
+//         from: 'FDAFDASFDA' "<no-reply@wspstore.com>",
+//         to: email,
+//         subject: " ONLINE INVOICE",
+//         text: "YOUR RECEIPT ",
+//         html: emailHTML
+//     })
+//     admin.firestore().collection('mail').add({
+//         to: 'email',
+//         message: {
+//           subject: 'your invoice!',
+//           html: `emailHTML`,
+//         }
+//       }).then(()=>
+//       console.log('emil sent')
+//       );
+// }
+
 module.exports = {
     createUser,
     listUsers,
     verifyIdToken,
     getOrderHistory,
     checkOut,
+    // emailInvoice,
 }

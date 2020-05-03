@@ -2,6 +2,7 @@ const functions = require('firebase-functions');
 const express = require('express');
 const app = express();
 const path = require('path');
+const nodemailer = require("nodemailer");
 
 exports.httpReq = functions.https.onRequest(app);
 
@@ -51,7 +52,6 @@ const adminUtil = require('./adminUtil.js')
 
 const Constants = require('./myconstants.js');
 let lastVisible;
-let prev;
 let lastVisiblePerPage = {};
 let i;
 
@@ -163,11 +163,11 @@ app.post('/b/signin', async(req, res) => {
             res.redirect('/admin/sysadmin')
         } else if (!userRecord.user.emailVerified) {
             userRecord.user.sendEmailVerification().then(function() {
-                console.log("email verification send to user");
                 res.redirect('/')
-            }).catch(function(e) {
-                res.redirect('/')
-            });
+                return console.log("email verification send to user");
+            }).catch(function(error) {
+                return console.log(error)    
+            }); 
         } else {
             if (!req.session.cart) {
                 res.setHeader('Cache-Control', 'private');
@@ -251,25 +251,66 @@ app.post('/b/checkout', authAndRedirectSignIn, async(req, res) => {
     if (!req.session.cart) {
         res.setHeader('Cache-Control', 'private');
         return res.send('Shopping car is Empty')
-    }
-
+    }  
     const data = {
         uid: req.decodedIdToken.uid,
         // timestamp: firebase.firestore.Timestamp.fromDate(new Date()),
         cart: req.session.cart
     }
+    var email = req.decodedIdToken.email;
     try {
         await adminUtil.checkOut(data)
+
+        var time = data.timestamp.toDate()
+        var emailHTML= `
+        Order Date :${time}<br>
+        <table class="table table-striped">
+                <tr>
+                <th></th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Qty</th>
+                </tr>`;
+                 for(let i = 0; i < data.cart.length; i++) {
+                     emailHTML +=`
+                     <tr>
+                     <td><img src = "${data.cart[i].product.image_url}" height = "50" width ="50"></td>
+                     <td>${data.cart[i].product.name} </td>
+                     <td>${data.cart[i].product.price}</td>
+                     <td>${data.cart[i].qty}</td>
+                 </tr>
+                     `
+                     }
+                   
+            emailHTML+= `</table>`;
+            let transporter = nodemailer.createTransport({
+                host : "smtp.gmail.com",
+                port:465,
+                secure: true,
+                auth:{
+                    user: "th3blproject@gmail.com",
+                    pass: "FriedRice22"
+            }
+        
+            });
+            let info = await transporter.sendMail({
+                from: '"FDAFDASFDA "<no-reply@wspstore.com>"',
+                to: email,
+                subject: " ONLINE INVOICE",
+                text: "YOUR RECEIPT ",
+                html: emailHTML
+            })
+
         req.session.cart = null;
         res.setHeader('Cache-Control', 'private');
         return res.render('shoppingcart.ejs', { message: 'Checkout Successful', cart: new ShoppingCart(), user: req.decodedIdToken, cartCount: 0 })
     } catch (e) {
         const cart = ShoppingCart.deserialize(req.session.cart)
+        console.log('Message',e )
         res.setHeader('Cache-Control', 'private');
-        return res.render('shoppingcart.ejs', { message: 'Checkout Declined. Try again', cart, user: req.decodedIdToken, cartCount: cart.contents.length })
+        return res.render('shoppingcart.ejs', { message: 'Checkout Declined. Try again',cart, user: req.decodedIdToken, cartCount: cart.contents.length })
     }
 })
-
 
 app.get('/b/orderhistory', authAndRedirectSignIn, async(req, res) => {
         try {
