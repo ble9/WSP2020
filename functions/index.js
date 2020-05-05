@@ -38,13 +38,7 @@ const firebase = require('firebase')
 
 // Your web app's Firebase configuration
 var firebaseConfig = {
-    apiKey: "AIzaSyA-y2SCs2L2RRhKzZssDASqNJGpvo327IE",
-    authDomain: "brianl-wsp20.firebaseapp.com",
-    databaseURL: "https://brianl-wsp20.firebaseio.com",
-    projectId: "brianl-wsp20",
-    storageBucket: "brianl-wsp20.appspot.com",
-    messagingSenderId: "926690846030",
-    appId: "1:926690846030:web:28064a81febe7141212a1f"
+   //pull from your firebase
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -288,8 +282,8 @@ app.post('/b/checkout', authAndRedirectSignIn, async(req, res) => {
                 port:465,
                 secure: true,
                 auth:{
-                    user: "th3blproject@gmail.com",
-                    pass: "FriedRice22"
+                    user: "example@gmail.com",
+                    pass: "your password"
             }
         
             });
