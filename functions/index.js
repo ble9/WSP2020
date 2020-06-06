@@ -38,7 +38,13 @@ const firebase = require('firebase')
 
 // Your web app's Firebase configuration
 var firebaseConfig = {
-   //pull from your firebase
+    apiKey: "AIzaSyA-y2SCs2L2RRhKzZssDASqNJGpvo327IE",
+    authDomain: "brianl-wsp20.firebaseapp.com",
+    databaseURL: "https://brianl-wsp20.firebaseio.com",
+    projectId: "brianl-wsp20",
+    storageBucket: "brianl-wsp20.appspot.com",
+    messagingSenderId: "926690846030",
+    appId: "1:926690846030:web:28064a81febe7141212a1f"
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -55,7 +61,7 @@ app.get('/', auth, async(req, res) => {
     const coll = firebase.firestore().collection(Constants.COLL_PRODUCTS);
     try {
         let products = [];
-        const snapshot = await coll.orderBy("price").limit(10).get();
+        const snapshot = await coll.orderBy("price").limit(8).get();
         snapshot.forEach(doc => {
             products.push({ id: doc.id, data: doc.data() })
         })
@@ -79,8 +85,8 @@ app.get('/b/prev', auth, async(req, res) => {
     try {
         let products = [];
         const snapshot = await coll.orderBy("price")
-            .startAfter(lastVisiblePerPage[i - 1])
-            .limit(10)
+            .startAt(lastVisiblePerPage[i - 1])
+            .limit(8)
             .get();
         snapshot.forEach(doc => {
             products.push({ id: doc.id, data: doc.data() })
@@ -101,7 +107,7 @@ app.get('/b/next', auth, async(req, res) => {
         let products = [];
         const snapshot = await coll.orderBy("price")
             .startAfter(lastVisible)
-            .limit(10)
+            .limit(8)
             .get();
         snapshot.forEach(doc => {
             products.push({ id: doc.id, data: doc.data() })
@@ -160,8 +166,8 @@ app.post('/b/signin', async(req, res) => {
                 res.redirect('/')
                 return console.log("email verification send to user");
             }).catch(function(error) {
-                return console.log(error)    
-            }); 
+                return console.log(error)
+            });
         } else {
             if (!req.session.cart) {
                 res.setHeader('Cache-Control', 'private');
@@ -245,7 +251,7 @@ app.post('/b/checkout', authAndRedirectSignIn, async(req, res) => {
     if (!req.session.cart) {
         res.setHeader('Cache-Control', 'private');
         return res.send('Shopping car is Empty')
-    }  
+    }
     const data = {
         uid: req.decodedIdToken.uid,
         // timestamp: firebase.firestore.Timestamp.fromDate(new Date()),
@@ -256,7 +262,7 @@ app.post('/b/checkout', authAndRedirectSignIn, async(req, res) => {
         await adminUtil.checkOut(data)
 
         var time = data.timestamp.toDate()
-        var emailHTML= `
+        var emailHTML = `
         Order Date :${time}<br>
         <table class="table table-striped">
                 <tr>
@@ -265,8 +271,8 @@ app.post('/b/checkout', authAndRedirectSignIn, async(req, res) => {
                     <th>Price</th>
                     <th>Qty</th>
                 </tr>`;
-                 for(let i = 0; i < data.cart.length; i++) {
-                     emailHTML +=`
+        for (let i = 0; i < data.cart.length; i++) {
+            emailHTML += `
                      <tr>
                      <td><img src = "${data.cart[i].product.image_url}" height = "50" width ="50"></td>
                      <td>${data.cart[i].product.name} </td>
@@ -274,35 +280,35 @@ app.post('/b/checkout', authAndRedirectSignIn, async(req, res) => {
                      <td>${data.cart[i].qty}</td>
                  </tr>
                      `
-                     }
-                   
-            emailHTML+= `</table>`;
-            let transporter = nodemailer.createTransport({
-                host : "smtp.gmail.com",
-                port:465,
-                secure: true,
-                auth:{
-                    user: "example@gmail.com",
-                    pass: "your password"
+        }
+
+        emailHTML += `</table>`;
+        let transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 465,
+            secure: true,
+            auth: {
+                user: "example@gmail.com",
+                pass: "your password"
             }
-        
-            });
-            let info = await transporter.sendMail({
-                from: '"FDAFDASFDA "<no-reply@wspstore.com>"',
-                to: email,
-                subject: " ONLINE INVOICE",
-                text: "YOUR RECEIPT ",
-                html: emailHTML
-            })
+
+        });
+        let info = await transporter.sendMail({
+            from: '"FDAFDASFDA "<no-reply@wspstore.com>"',
+            to: email,
+            subject: " ONLINE INVOICE",
+            text: "YOUR RECEIPT ",
+            html: emailHTML
+        })
 
         req.session.cart = null;
         res.setHeader('Cache-Control', 'private');
         return res.render('shoppingcart.ejs', { message: 'Checkout Successful', cart: new ShoppingCart(), user: req.decodedIdToken, cartCount: 0 })
     } catch (e) {
         const cart = ShoppingCart.deserialize(req.session.cart)
-        console.log('Message',e )
+        console.log('Message', e)
         res.setHeader('Cache-Control', 'private');
-        return res.render('shoppingcart.ejs', { message: 'Checkout Declined. Try again',cart, user: req.decodedIdToken, cartCount: cart.contents.length })
+        return res.render('shoppingcart.ejs', { message: 'Checkout Declined. Try again', cart, user: req.decodedIdToken, cartCount: cart.contents.length })
     }
 })
 

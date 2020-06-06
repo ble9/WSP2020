@@ -13,7 +13,10 @@
 
 <body>
     <%- include('partials/nav.ejs', {page: 'storefront', user}) %>
-        <h1>My Store</h1>
+        <h1>My Store
+            <a href="/b/prev" class="btn btn-primary">prev</a>
+            <a href="/b/next" class="btn btn-primary">next</a>
+        </h1>
 
         <% if (error) { %>
             <p style="color: red;">
@@ -22,7 +25,8 @@
             <% } else { %>
                 <% for(let p of products) { %>
                     <div class="card" style="width: 18rem; display: inline-block;">
-                        <img src="<%= p.data.image_url %>" class="card-img-top">
+                        <img src="<%= p.data.image_url %>" class="card-img-top" style=" width: 288px;
+                        height: 480px;">
                         <div class="card-body">
                             <h5 class="card-title">
                                 <%= p.data.name %>
@@ -33,7 +37,7 @@
                             </p>
                             <form action="/b/add2cart" method="post">
                                 <input type="hidden" name="docId" value="<%= p.id %>">
-                                <input type="text" name="quantityOption" value="0" style="width: 30px; height: 36px">
+                                <input type="text" name="quantityOption" value="1" style="width: 30px; height: 30px">
                                 <button type="submit" class="btn btn-primary"> Add to ShoppingCart </button>
 
                             </form>
@@ -42,8 +46,6 @@
                     <% } %>
                         <% } %>
 
-                            <a href="/b/prev" class="btn btn-primary">prev</a>
-                            <a href="/b/next" class="btn btn-primary">next</a>
                             <%- include('partials/scripts.ejs') %>
 </body>
 
